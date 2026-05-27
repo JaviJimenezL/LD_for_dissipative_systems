@@ -26,7 +26,7 @@ plt.rcParams.update({
 Load data
 """
 
-data = np.loadtxt('/home/javier/dissipative_systems/duffing_results/results_duffing_delta_0p3_alpha_1_beta_1_gamma_0p3_omega_1p2.txt')
+data = np.loadtxt('/home/javier/dissipative_systems/quasiperiodic_duffing_results/results_quasiperiodic_duffing_delta_0p3_alpha_1_beta_1_gamma1_0p3_gamma2_0p1_omega1_1_omega2_sqrt2.txt')
 
 
 """
@@ -91,6 +91,7 @@ plt.ylabel(r'$y$', rotation=0)
 plt.tight_layout()
 # plt.savefig("/home/javier/dissipative_systems/figures/trajectories_hopf.pdf", dpi = 300)
 plt.show()
+
 
 
 

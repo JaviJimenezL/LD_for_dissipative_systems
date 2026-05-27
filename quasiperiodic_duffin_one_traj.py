@@ -4,8 +4,7 @@ UCM
 26-5-2026
 """
 
-# This code simulates one trajectory in the Duffin system
-
+# This code simulates one trajectory in the quasi-periodically forced Duffing system
 
 import os
 import numpy as np
@@ -31,33 +30,72 @@ plt.rcParams.update({
 Functions
 """
 
-def rhs_aug_arclength(t, z, delta, alpha, beta, gamma, drive_omega):
+def quasi_periodic_forcing(t, gamma1, gamma2, omega1, omega2):
+
+    forcing = (
+        gamma1 * np.cos(omega1 * t)
+        + gamma2 * np.cos(omega2 * t)
+    )
+
+    return forcing
+
+###############################################################################
+
+def rhs_aug_arclength(
+    t,
+    z,
+    delta,
+    alpha,
+    beta_duffing,
+    gamma1,
+    gamma2,
+    omega1,
+    omega2,
+):
+
     x, y, s = z
 
+    forcing = quasi_periodic_forcing(
+        t=t,
+        gamma1=gamma1,
+        gamma2=gamma2,
+        omega1=omega1,
+        omega2=omega2,
+    )
+
     xdot = y
-    ydot = -delta * y + alpha * x - beta * x**3 + gamma * np.cos(drive_omega * t)
+
+    ydot = (
+        -delta * y
+        + alpha * x
+        - beta_duffing * x**3
+        + forcing
+    )
 
     speed = np.sqrt(xdot**2 + ydot**2)
 
     return np.array([xdot, ydot, speed], dtype=float)
-
 
 ###############################################################################
 
 def integrate_ld_curve(
     x0,
     y0,
-    delta=0.2,
+    delta=0.3,
     alpha=1.0,
-    beta=1.0,
-    gamma=0.3,
-    drive_omega=1.2,
+    beta_duffing=1.0,
+    gamma1=0.3,
+    gamma2=0.1,
+    omega1=1.0,
+    omega2=np.sqrt(2.0),
     t0=0.0,
     T=20.0,
     n_eval=10000,
     rtol=1e-10,
     atol=1e-12,
 ):
+
+
     t_eval = np.linspace(t0, t0 + T, n_eval)
     z0 = np.array([x0, y0, 0.0], dtype=float)
 
@@ -67,7 +105,15 @@ def integrate_ld_curve(
         z0,
         method="DOP853",
         t_eval=t_eval,
-        args=(delta, alpha, beta, gamma, drive_omega),
+        args=(
+            delta,
+            alpha,
+            beta_duffing,
+            gamma1,
+            gamma2,
+            omega1,
+            omega2,
+        ),
         rtol=rtol,
         atol=atol,
     )
@@ -85,6 +131,10 @@ def integrate_ld_curve(
 ###############################################################################
 
 def make_neighbor_ic(x0, y0, eps=1e-8, direction=(1.0, 1.0)):
+    """
+    Generate a neighboring initial condition at distance eps.
+    """
+
     u = np.array(direction, dtype=float)
     u /= np.linalg.norm(u)
 
@@ -99,9 +149,13 @@ def main():
 
     delta = 0.3
     alpha = 1.0
-    beta = 1.0
-    gamma = 0.3
-    drive_omega = 1.2
+    beta_duffing = 1.0
+
+    gamma1 = 0.3
+    gamma2 = 0.1
+
+    omega1 = 1.0
+    omega2 = np.sqrt(2.0)
 
     t0 = 0.0
     T = 10000.0
@@ -115,25 +169,27 @@ def main():
     rtol = 1e-10
     atol = 1e-12
 
-    output_dir = "/home/javier/dissipative_systems/duffing_results"
+    output_dir = "/home/javier/dissipative_systems/quasiperiodic_duffing_results"
     os.makedirs(output_dir, exist_ok=True)
 
     output_file = os.path.join(
         output_dir,
-        "results_duffing_delta_0p3_alpha_1_beta_1_gamma_0p3_omega_1p2.txt"
+        "results_quasiperiodic_duffing_delta_0p3_alpha_1_beta_1_"
+        "gamma1_0p3_gamma2_0p1_omega1_1_omega2_sqrt2.txt"
     )
 
     for (x0, y0) in base_ics:
 
-        # Integrate base orbit
         t, ld_base, x_base, y_base = integrate_ld_curve(
             x0=x0,
             y0=y0,
             delta=delta,
             alpha=alpha,
-            beta=beta,
-            gamma=gamma,
-            drive_omega=drive_omega,
+            beta_duffing=beta_duffing,
+            gamma1=gamma1,
+            gamma2=gamma2,
+            omega1=omega1,
+            omega2=omega2,
             t0=t0,
             T=T,
             n_eval=n_eval,
@@ -141,7 +197,6 @@ def main():
             atol=atol,
         )
 
-        # Integrate neighboring orbit
         x0n, y0n = make_neighbor_ic(
             x0=x0,
             y0=y0,
@@ -154,9 +209,11 @@ def main():
             y0=y0n,
             delta=delta,
             alpha=alpha,
-            beta=beta,
-            gamma=gamma,
-            drive_omega=drive_omega,
+            beta_duffing=beta_duffing,
+            gamma1=gamma1,
+            gamma2=gamma2,
+            omega1=omega1,
+            omega2=omega2,
             t0=t0,
             T=T,
             n_eval=n_eval,
@@ -191,8 +248,8 @@ def main():
         header = (
             "t delta_ld integral_delta_ld omega_ld "
             "x_base y_base x_neighbor y_neighbor\n"
-            f"Parameters: delta={delta}, alpha={alpha}, beta={beta}, "
-            f"gamma={gamma}, drive_omega={drive_omega}, "
+            f"Parameters: delta={delta}, alpha={alpha}, beta_duffing={beta_duffing}, "
+            f"gamma1={gamma1}, gamma2={gamma2}, omega1={omega1}, omega2={omega2}, "
             f"x0={x0}, y0={y0}, eps={eps}, direction={direction}, "
             f"t0={t0}, T={T}, n_eval={n_eval}, rtol={rtol}, atol={atol}"
         )
@@ -201,6 +258,7 @@ def main():
 
         print(f"Saved results to: {output_file}")
 
+###############################################################################
 
 if __name__ == "__main__":
     main()
