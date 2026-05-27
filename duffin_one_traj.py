@@ -97,11 +97,11 @@ def make_neighbor_ic(x0, y0, eps=1e-8, direction=(1.0, 1.0)):
 
 def main():
 
-    delta = 0.3
+    delta = 1.0
     alpha = 1.0
     beta = 1.0
-    gamma = 0.3
-    drive_omega = 1.2
+    gamma = 0.5
+    drive_omega = 1.0
 
     t0 = 0.0
     T = 10000.0
@@ -120,7 +120,7 @@ def main():
 
     output_file = os.path.join(
         output_dir,
-        "results_duffing_delta_0p3_alpha_1_beta_1_gamma_0p3_omega_1p2.txt"
+        "results_duffing_delta_1_alpha_1_beta_1_gamma_0p5_omega_1p0.txt"
     )
 
     for (x0, y0) in base_ics:

@@ -147,12 +147,12 @@ def make_neighbor_ic(x0, y0, eps=1e-8, direction=(1.0, 1.0)):
 
 def main():
 
-    delta = 0.3
+    delta = 1.0
     alpha = 1.0
     beta_duffing = 1.0
 
-    gamma1 = 0.3
-    gamma2 = 0.1
+    gamma1 = 0.5
+    gamma2 = 0.5
 
     omega1 = 1.0
     omega2 = np.sqrt(2.0)
@@ -174,8 +174,8 @@ def main():
 
     output_file = os.path.join(
         output_dir,
-        "results_quasiperiodic_duffing_delta_0p3_alpha_1_beta_1_"
-        "gamma1_0p3_gamma2_0p1_omega1_1_omega2_sqrt2.txt"
+        "results_quasiperiodic_duffing_delta_1_alpha_1_beta_1_"
+        "gamma1_0p5_gamma2_0p5_omega1_1_omega2_sqrt2.txt"
     )
 
     for (x0, y0) in base_ics:

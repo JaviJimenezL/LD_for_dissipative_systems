@@ -26,7 +26,7 @@ plt.rcParams.update({
 Load data
 """
 
-data = np.loadtxt('/home/javier/dissipative_systems/chirped_duffing_results/results_chirped_duffing_delta_0p3_alpha_1_beta_1_gamma_0p3_omega0_1p2_kappa_1em4.txt')
+data = np.loadtxt('/home/javier/dissipative_systems/chirped_duffing_results/results_chirped_duffing_delta_0_alpha_1_beta_1_gamma_0p3_omega0_1p2_kappa_1em4.txt')
 
 
 """

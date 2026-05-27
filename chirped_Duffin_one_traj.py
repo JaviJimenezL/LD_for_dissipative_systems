@@ -146,13 +146,13 @@ def make_neighbor_ic(x0, y0, eps=1e-8, direction=(1.0, 1.0)):
 def main():
 
 
-    delta = 0.3
+    delta = 1.0
     alpha = 1.0
     beta_duffing = 1.0
 
-    gamma = 0.3
+    gamma = 0.5
 
-    omega0 = 1.2
+    omega0 = 1.0
 
     kappa = 1e-4
 
@@ -175,8 +175,8 @@ def main():
 
     output_file = os.path.join(
         output_dir,
-        "results_chirped_duffing_delta_0p3_alpha_1_beta_1_"
-        "gamma_0p3_omega0_1p2_kappa_1em4.txt"
+        "results_chirped_duffing_delta_1_alpha_1_beta_1_"
+        "gamma_0p5_omega0_1_kappa_1em4.txt"
     )
 
     for (x0, y0) in base_ics:
