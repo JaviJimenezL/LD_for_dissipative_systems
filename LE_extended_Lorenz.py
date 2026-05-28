@@ -56,7 +56,7 @@ def lyapunov_spectrum(
     dt=0.002,          
     renorm_every=25,   
     T_transient=300.0, 
-    T=6000.0,         
+    T=10000.0,         
     report_every=None,
 ):
     n = 4
